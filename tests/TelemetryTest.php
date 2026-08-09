@@ -61,14 +61,18 @@ it('records each domain event under a stable name a query can key on', function 
 
     expect(collect($records())->pluck('context.event'))->toContain('commerce-core.'.$event);
 })->with([
-    'store created' => [fn () => fn () => (new CreateStore())->handle('Acme'), 'store.created'],
-    'store status' => [fn () => fn () => (new ChangeStoreStatus())->handle(Store::factory()->draft()->create(), StoreStatus::Active), 'store.status_changed'],
-    'channel created' => [fn () => fn () => (new CreateChannel())->handle(Store::factory()->create(), 'Web'), 'channel.created'],
-    'channel status' => [fn () => fn () => (new ChangeChannelStatus())->handle(Channel::factory()->draft()->create(), ChannelStatus::Active), 'channel.status_changed'],
-    'domain added' => [fn () => fn () => (new AddChannelDomain())->handle(Channel::factory()->create(), 'a.example.com'), 'channel_domain.added'],
-    'capability' => [fn () => fn () => (new SetStoreCapability())->handle(Store::factory()->create(), Capability::GuestCheckout, true), 'store_capability.changed'],
-    'setting' => [fn () => fn () => (new SetStoreSetting())->handle(Store::factory()->create(), 'k', 'a'), 'store_setting.changed'],
-    'order number' => [fn () => fn () => (new AllocateOrderNumber())->handle(Store::factory()->create()), 'order_number.allocated'],
+    // One level of closure, not two. Pest hands a closure inside a dataset row
+    // through untouched rather than calling it, so a closure returning a
+    // closure meant the test invoked the outer one and asserted on an action
+    // that never ran.
+    'store created' => [fn () => (new CreateStore())->handle('Acme'), 'store.created'],
+    'store status' => [fn () => (new ChangeStoreStatus())->handle(Store::factory()->draft()->create(), StoreStatus::Active), 'store.status_changed'],
+    'channel created' => [fn () => (new CreateChannel())->handle(Store::factory()->create(), 'Web'), 'channel.created'],
+    'channel status' => [fn () => (new ChangeChannelStatus())->handle(Channel::factory()->draft()->create(), ChannelStatus::Active), 'channel.status_changed'],
+    'domain added' => [fn () => (new AddChannelDomain())->handle(Channel::factory()->create(), 'a.example.com'), 'channel_domain.added'],
+    'capability' => [fn () => (new SetStoreCapability())->handle(Store::factory()->create(), Capability::GuestCheckout, true), 'store_capability.changed'],
+    'setting' => [fn () => (new SetStoreSetting())->handle(Store::factory()->create(), 'k', 'a'), 'store_setting.changed'],
+    'order number' => [fn () => (new AllocateOrderNumber())->handle(Store::factory()->create()), 'order_number.allocated'],
 ]);
 
 it('raises the level when a store stops serving, and not when it starts', function () {
