@@ -2,6 +2,7 @@
 
 namespace Liberu\Ecommerce\CommerceCore\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,6 +19,16 @@ use Liberu\Ecommerce\CommerceCore\Enums\StoreStatus;
  * The team model is resolved from configuration at call time and never
  * imported — see ADR 0006. A module that names `App\Models\Team` in a `use`
  * statement installs into exactly one application.
+ *
+ * @property int $id
+ * @property int|null $team_id
+ * @property string $name
+ * @property string $slug
+ * @property StoreStatus $status
+ * @property string $currency
+ * @property string $locale
+ * @property string $timezone
+ * @property CarbonImmutable|null $archived_at
  */
 class Store extends Model
 {

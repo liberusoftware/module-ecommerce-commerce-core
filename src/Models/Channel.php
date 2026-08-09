@@ -13,6 +13,15 @@ use Liberu\Ecommerce\CommerceCore\Enums\ChannelStatus;
 
 /**
  * One way into a Store — a set of hostnames and the theme they render with.
+ *
+ * @property int $id
+ * @property int $store_id
+ * @property string $name
+ * @property string $theme
+ * @property ChannelStatus $status
+ * @property string|null $currency
+ * @property string|null $locale
+ * @property-read Store $store
  */
 class Channel extends Model
 {

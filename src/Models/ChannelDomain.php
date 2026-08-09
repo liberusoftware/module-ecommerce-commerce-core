@@ -18,6 +18,11 @@ use Liberu\Ecommerce\CommerceCore\Database\Factories\ChannelDomainFactory;
  * `AppServiceProvider` — because a cache invalidated by whoever remembers is a
  * cache that goes stale, and stale here means a merchant adds a domain and
  * their storefront answers 400 until something else happens to clear it.
+ *
+ * @property int $id
+ * @property int $channel_id
+ * @property string $host
+ * @property bool $is_primary
  */
 class ChannelDomain extends Model
 {

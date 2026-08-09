@@ -12,6 +12,12 @@ use Liberu\Ecommerce\CommerceCore\Actions\AllocateOrderNumber;
  * Allocation is {@see AllocateOrderNumber}'s
  * job, not this model's: incrementing safely needs a transaction and a row
  * lock, and a model method invites a caller to do it without either.
+ *
+ * @property int $id
+ * @property int $store_id
+ * @property string $prefix
+ * @property int $next_number
+ * @property int $pad_to
  */
 class OrderNumberSequence extends Model
 {

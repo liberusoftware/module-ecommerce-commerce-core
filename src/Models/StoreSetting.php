@@ -13,6 +13,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * know all of them. The key namespace is the writer's — `checkout.terms_url`,
  * `shipping.free_over` — and this table only guarantees that a key means one
  * thing per store.
+ *
+ * @property int $id
+ * @property int $store_id
+ * @property string $key
+ * @property mixed $value
  */
 class StoreSetting extends Model
 {
