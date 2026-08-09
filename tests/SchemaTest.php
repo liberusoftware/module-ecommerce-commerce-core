@@ -89,18 +89,25 @@ it('refuses a store holding two sequences for one prefix', function () {
     DB::table('ecommerce_commerce_core_order_sequences')->insert($row);
 })->throws(QueryException::class);
 
-it('takes a store’s children with it, so deleting one leaves nothing orphaned', function () {
-    $store = Store::factory()->create();
-    $channel = Channel::factory()->create(['store_id' => $store->id]);
-    DB::table('channel_domains')->insert(['channel_id' => $channel->id, 'host' => 'a.example.com', 'created_at' => now(), 'updated_at' => now()]);
-    DB::table('ecommerce_commerce_core_settings')->insert(['store_id' => $store->id, 'key' => 'k', 'value' => '"a"', 'created_at' => now(), 'updated_at' => now()]);
+it('declares a cascade, so deleting a store cannot leave an orphan behind', function (string $table, string $column, string $parent) {
+    // The declaration is asserted rather than the deletion. Whether the engine
+    // acts on it is a connection setting — SQLite enforces foreign keys only
+    // with the pragma on, and a pragma inside RefreshDatabase's transaction is
+    // a no-op — so a behavioural test here would pass or fail on how the suite
+    // is wired rather than on what this migration says.
+    $foreignKey = collect(Schema::getForeignKeys($table))
+        ->first(fn (array $key): bool => in_array($column, $key['columns'], true));
 
-    $store->delete();
-
-    expect(DB::table('channels')->count())->toBe(0)
-        ->and(DB::table('channel_domains')->count())->toBe(0)
-        ->and(DB::table('ecommerce_commerce_core_settings')->count())->toBe(0);
-});
+    expect($foreignKey)->not->toBeNull()
+        ->and($foreignKey['foreign_table'])->toBe($parent)
+        ->and(strtolower((string) $foreignKey['on_delete']))->toBe('cascade');
+})->with([
+    'channels' => ['channels', 'store_id', 'stores'],
+    'domains' => ['channel_domains', 'channel_id', 'channels'],
+    'settings' => ['ecommerce_commerce_core_settings', 'store_id', 'stores'],
+    'capabilities' => ['ecommerce_commerce_core_capabilities', 'store_id', 'stores'],
+    'sequences' => ['ecommerce_commerce_core_order_sequences', 'store_id', 'stores'],
+]);
 
 it('leaves a store unowned rather than pointing at a team that is not there', function () {
     // `team_id` carries no foreign key on purpose: the team belongs to the host

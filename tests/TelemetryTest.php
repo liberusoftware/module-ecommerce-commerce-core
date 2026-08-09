@@ -19,7 +19,14 @@ use Liberu\Ecommerce\CommerceCore\Enums\StoreStatus;
 use Liberu\Ecommerce\CommerceCore\Models\Channel;
 use Liberu\Ecommerce\CommerceCore\Models\Store;
 
-/** Capture what the logger wrote, in order. */
+/**
+ * Capture what the logger wrote, in order.
+ *
+ * The reader is a long closure with an explicit `use (&$records)` rather than an
+ * arrow function: `fn` captures by value at the point it is defined, so it would
+ * hand back the empty array this starts as and never see anything the listener
+ * appended.
+ */
 function captureLog(): Closure
 {
     $records = [];
@@ -28,7 +35,9 @@ function captureLog(): Closure
         $records[] = ['level' => $record->level, 'message' => $record->message, 'context' => $record->context];
     });
 
-    return fn (): array => $records;
+    return function () use (&$records): array {
+        return $records;
+    };
 }
 
 beforeEach(function () {
