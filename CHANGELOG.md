@@ -6,6 +6,34 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versions are bare `MAJOR.MINOR.PATCH` tags — no `v` prefix — per ADR 0005 of the
 Ecommerce repository.
 
+## 0.4.0 — 2026-08-09
+
+### Added
+
+- **Telemetry** — `Telemetry\DomainEventLogger`, a subscriber that writes each
+  domain event as a structured record. **Off by default**: a merchant estate
+  produces one per checkout, and a package that starts writing to a deployment's
+  log the moment it installs has decided somebody else's retention bill. Enable
+  with `COMMERCE_CORE_TELEMETRY=true`, optionally naming a channel.
+
+  It is a listener, not an instrumentation layer. The module consumes
+  observability from the shared foundation rather than duplicating it; what it
+  adds is the vocabulary — an application's log has no idea that a store moving
+  to `suspended` is worth finding. Levels carry that meaning so an alert needs no
+  message parsing: anything that stops a storefront serving, or moves traffic
+  between hostnames, is a `warning`.
+
+  **Setting values are never written** — only the key, whether there was a
+  previous value, and whether it was cleared. A setting may hold a credential,
+  and a log has different retention and different access than the table it came
+  from.
+- **`docs/runbook.md`**, **`docs/adoption.md`**, **`docs/domain.md`**.
+- **`tests/SchemaTest.php`** — the migration is as much a public surface as the
+  classes are. It asserts the tables, the columns a consumer reads, the database
+  defaults (inserted through the query builder, so a row written by a seeder or
+  another module's migration is covered too), every uniqueness control, and that
+  deleting a store leaves nothing orphaned.
+
 ## 0.3.0 — 2026-08-09
 
 ### Added

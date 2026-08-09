@@ -2,6 +2,7 @@
 
 namespace Liberu\Ecommerce\CommerceCore;
 
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Liberu\Ecommerce\CommerceCore\Actions\AllocateOrderNumber;
@@ -12,6 +13,7 @@ use Liberu\Ecommerce\CommerceCore\Models\Store;
 use Liberu\Ecommerce\CommerceCore\Policies\ChannelPolicy;
 use Liberu\Ecommerce\CommerceCore\Policies\StorePolicy;
 use Liberu\Ecommerce\CommerceCore\Services\CommercialContextResolver;
+use Liberu\Ecommerce\CommerceCore\Telemetry\DomainEventLogger;
 
 /**
  * Registered by `ModuleManagerServiceProvider` from `module.json`, never by
@@ -40,6 +42,12 @@ class CommerceCoreServiceProvider extends ServiceProvider
         // module's models are in neither namespace.
         Gate::policy(Store::class, StorePolicy::class);
         Gate::policy(Channel::class, ChannelPolicy::class);
+
+        // Subscribed unconditionally, and silent unless the deployment turns
+        // telemetry on. Gating the subscription on config instead would make
+        // the setting un-changeable at runtime, which is exactly the thing a
+        // deployment wants to flip while it is investigating something.
+        Event::subscribe(DomainEventLogger::class);
 
         $this->publishes([
             __DIR__.'/../config/commerce-core.php' => config_path('commerce-core.php'),

@@ -34,4 +34,27 @@ return [
 
     'default_currency' => env('COMMERCE_CORE_DEFAULT_CURRENCY', 'USD'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Telemetry
+    |--------------------------------------------------------------------------
+    |
+    | Structured records of this module's own domain events. Off by default:
+    | a merchant estate produces one of these per checkout, and a package that
+    | starts writing to a deployment's log the moment it installs has decided
+    | somebody else's retention bill.
+    |
+    | `channel` is a Laravel log channel name, or null for the default one.
+    |
+    | Nothing here is exclusive. Everything the logger writes is a domain event
+    | any listener can subscribe to, so a deployment wanting these in a metrics
+    | backend subscribes to the events and leaves this off.
+    |
+    */
+
+    'telemetry' => [
+        'enabled' => (bool) env('COMMERCE_CORE_TELEMETRY', false),
+        'channel' => env('COMMERCE_CORE_TELEMETRY_CHANNEL'),
+    ],
+
 ];

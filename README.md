@@ -65,6 +65,10 @@ ChannelDomain::deleted(fn () => Cache::forget(TrustHosts::CACHE_KEY));
 
 ## Documentation
 
+- [Adoption guide](docs/adoption.md) — install, enable, and what the host must supply
+- [The domain](docs/domain.md) — aggregates, actions, queries, events, authorization, tables
+- [Runbook](docs/runbook.md) — what breaks in production and what to do about it
+- [Changelog](CHANGELOG.md)
 - [Liberu Main Documentation](https://github.com/liberusoftware/documentation)
 - [Architecture & Standards Index](https://github.com/liberusoftware/documentation/tree/main/architecture)
 

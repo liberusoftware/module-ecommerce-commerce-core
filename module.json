@@ -3,7 +3,7 @@
     "name": "ecommerce-commerce-core",
     "display_name": "Commerce Core",
     "description": "Stores, channels, commercial context, order numbering, shared states, settings, capabilities and domain events.",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "category": "capability",
     "provider": "Liberu\\Ecommerce\\CommerceCore\\CommerceCoreServiceProvider",
     "requires": {
@@ -29,6 +29,7 @@
         "Capabilities",
         "Domain events",
         "Read models",
-        "Store and channel queries"
+        "Store and channel queries",
+        "Telemetry"
     ]
 }
