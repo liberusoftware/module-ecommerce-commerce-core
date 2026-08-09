@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schemas.liberu.dev/module/v1.json",
+    "name": "ecommerce-commerce-core",
+    "display_name": "Commerce Core",
+    "description": "Stores, channels, channel domains and the store context reads and writes are scoped by.",
+    "version": "0.1.0",
+    "category": "capability",
+    "provider": "Liberu\\Ecommerce\\CommerceCore\\CommerceCoreServiceProvider",
+    "requires": {
+        "php": "^8.5",
+        "laravel": "^13.0",
+        "packages": {
+            "liberusoftware/module-manager": "^1.4"
+        }
+    },
+    "capabilities": [
+        "ecommerce.commerce-core"
+    ],
+    "default_enabled": false,
+    "features": [
+        "Stores",
+        "Channels",
+        "Channel domains",
+        "Channel resolution",
+        "Store context"
+    ]
+}

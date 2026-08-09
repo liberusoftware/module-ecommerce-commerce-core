@@ -1,4 +1,4 @@
-# Ecommerce: Commerce Core Core Module
+# Ecommerce: Commerce Core
 
 > This package is the authoritative, provider-neutral implementation of Commerce Core. It owns domain behavior and data; optional API, Filament, Livewire, React, Vue, and Nuxt packages translate its public contracts for their surfaces.
 
@@ -28,7 +28,39 @@
 To install this package via Composer, run:
 
 ```bash
-composer require liberusoftware/module-ecommerce-commerce-core
+composer require liberusoftware/ecommerce-commerce-core
+```
+
+Installing boots nothing. The module ships no `extra.laravel.providers`, so
+`ModuleManagerServiceProvider` is the only thing that registers it, and only
+when the deployment names it:
+
+```dotenv
+MODULES_ENABLED=ecommerce-commerce-core
+```
+
+### What the host owns
+
+Two things are deliberately left to the application, because a module that did
+them would only install into one application.
+
+**The team model.** `Store::team()` resolves `config('commerce-core.team_model')`
+at call time, defaulting to `App\Models\Team`. An application whose team model
+lives elsewhere publishes the config and says so:
+
+```bash
+php artisan vendor:publish --tag=commerce-core-config
+```
+
+**The trusted-host list.** `channel_domains` is the natural source for it, and
+a host that caches it should clear the cache when the table changes. Register
+that once on the model rather than at the call sites that add domains — a cache
+invalidated by whoever remembers goes stale, and stale here means a merchant
+adds a domain and their storefront answers 400 until something else clears it:
+
+```php
+ChannelDomain::saved(fn () => Cache::forget(TrustHosts::CACHE_KEY));
+ChannelDomain::deleted(fn () => Cache::forget(TrustHosts::CACHE_KEY));
 ```
 
 ## Documentation
