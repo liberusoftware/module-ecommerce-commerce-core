@@ -6,6 +6,24 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versions are bare `MAJOR.MINOR.PATCH` tags — no `v` prefix — per ADR 0005 of the
 Ecommerce repository.
 
+## 0.3.0 — 2026-08-09
+
+### Added
+
+- **Read models and queries** — `StoreData`, `ChannelData`, `ChannelDomainData`,
+  `StoreQuery`, `ChannelQuery`. A presentation package can now render a store
+  without importing one.
+- **`CommerceAccess`** — the policy questions asked by id, for an adapter that
+  holds no model.
+
+These exist because of a boundary rule with teeth: an `-api` package may not
+import a `Models\` class at all. Without a read side the adapter has nothing to
+serialise and no way to authorize, and the rule gets waived rather than met —
+which is precisely the *business authorization solely in the presentation layer*
+that the epic excludes. The stable contract is a side benefit worth having: a
+column rename in this package is not a breaking change to a consumer that never
+saw the column.
+
 ## 0.2.0 — 2026-08-09
 
 The remaining six of the eight capabilities the specification names. 0.1.x had
