@@ -6,6 +6,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versions are bare `MAJOR.MINOR.PATCH` tags — no `v` prefix — per ADR 0005 of the
 Ecommerce repository.
 
+## 0.1.1 — 2026-08-09
+
+### Fixed
+
+- **`package-testbench` is required at `^1.6`, not `^1.5`.** The suite uses
+  `UsesTestUser`, which 1.5.0 does not ship, so the declared constraint claimed
+  a bottom end that cannot install. `--prefer-lowest` is the only thing that
+  looks at the bottom of a range, and it is why the compatibility workflow runs
+  on a tag rather than never.
+
 ## 0.1.0 — 2026-08-09
 
 First release. The module is extracted from `liberusoftware/ecommerce-laravel`,

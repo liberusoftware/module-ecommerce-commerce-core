@@ -3,7 +3,7 @@
     "name": "ecommerce-commerce-core",
     "display_name": "Commerce Core",
     "description": "Stores, channels, channel domains and the store context reads and writes are scoped by.",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "category": "capability",
     "provider": "Liberu\\Ecommerce\\CommerceCore\\CommerceCoreServiceProvider",
     "requires": {
