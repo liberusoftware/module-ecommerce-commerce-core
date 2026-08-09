@@ -6,6 +6,56 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 versions are bare `MAJOR.MINOR.PATCH` tags — no `v` prefix — per ADR 0005 of the
 Ecommerce repository.
 
+## 0.2.0 — 2026-08-09
+
+The remaining six of the eight capabilities the specification names. 0.1.x had
+Stores and Channels; this has the rest.
+
+### Added
+
+- **Shared states** — `StoreStatus` (draft → active ⇄ suspended → archived) and
+  `ChannelStatus` (draft → active ⇄ disabled), each owning its own transition
+  table so no surface keeps a second copy of the rules. Archived is terminal.
+- **Commercial context** — `CommercialContext`, an immutable value carrying
+  store, channel, team, currency, locale and timezone, and
+  `CommercialContextResolver` behind the `ResolvesCommercialContext` contract.
+  Channel overrides store for currency and locale; the timezone is the
+  merchant's operating day and a channel has no say in it. Resolution never
+  returns null — an unresolved context reports the deployment defaults, so no
+  caller writes that fallback itself.
+- **Order numbering** — `AllocateOrderNumber` behind `AllocatesOrderNumbers`,
+  one sequence per store per prefix, allocated under a row lock inside a
+  transaction. Numbers are spent on allocation, not on the order committing: a
+  gap is free and a duplicate is not.
+- **Settings** — per-store JSON key/value with one row per key, and
+  `StoreSettingChanged` carrying the previous value, because "what was it before
+  somebody broke it" is the question an audit actually asks.
+- **Capabilities** — `Capability`, a closed set of switches other modules branch
+  on, defaulting off. A stored row means somebody decided; no row means nobody
+  has, and the two are kept distinct.
+- **Domain events** — ten past-tense events across the lifecycle, settings,
+  capabilities, domains and numbering.
+- **Policies** — `StorePolicy` and `ChannelPolicy`, on team ownership read from
+  the actor rather than from a Filament panel, so they answer the same way in a
+  console command, a job and an API request. A store belonging to nobody is
+  nobody's to edit; an archived store is a record, not a resource.
+- **Actions** — `CreateStore`, `ChangeStoreStatus`, `CreateChannel`,
+  `ChangeChannelStatus`, `AddChannelDomain`, `PromoteDomainToPrimary`,
+  `RemoveChannelDomain`, `SetStoreSetting`, `SetStoreCapability`,
+  `AllocateOrderNumber`. Status changes are idempotent — a retried job and a
+  double-clicked button are not faults.
+- `commerce-core.default_currency`.
+
+### Changed
+
+- **`stores` and `channels` gain `status`, and the commercial columns.** The
+  migration is edited in place rather than added to: nothing consumes 0.1.x, and
+  a second migration to patch a table this package invented one release ago is
+  archaeology nobody needs.
+- **A channel's first hostname becomes its primary automatically**, and
+  releasing the primary promotes the oldest survivor. A channel with domains and
+  no primary canonicalises on whatever sorts first, which is a silent SEO fault.
+
 ## 0.1.1 — 2026-08-09
 
 ### Fixed

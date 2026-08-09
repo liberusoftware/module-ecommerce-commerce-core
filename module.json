@@ -2,8 +2,8 @@
     "$schema": "https://schemas.liberu.dev/module/v1.json",
     "name": "ecommerce-commerce-core",
     "display_name": "Commerce Core",
-    "description": "Stores, channels, channel domains and the store context reads and writes are scoped by.",
-    "version": "0.1.1",
+    "description": "Stores, channels, commercial context, order numbering, shared states, settings, capabilities and domain events.",
+    "version": "0.2.0",
     "category": "capability",
     "provider": "Liberu\\Ecommerce\\CommerceCore\\CommerceCoreServiceProvider",
     "requires": {
@@ -22,6 +22,11 @@
         "Channels",
         "Channel domains",
         "Channel resolution",
-        "Store context"
+        "Commercial context",
+        "Order numbering",
+        "Shared states",
+        "Settings",
+        "Capabilities",
+        "Domain events"
     ]
 }
