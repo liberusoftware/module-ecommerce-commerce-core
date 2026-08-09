@@ -25,6 +25,21 @@ class OrderNumberSequence extends Model
 
     protected $fillable = ['store_id', 'prefix', 'next_number', 'pad_to'];
 
+    /**
+     * The starting shape of a sequence, on the model rather than only in the
+     * migration.
+     *
+     * A column default is applied by the database and never read back, so a
+     * freshly `create()`d row holds nulls in memory while holding 1 and 6 on
+     * disk — and the first number allocated formats from the nulls. The column
+     * defaults stay as the backstop for rows this class did not insert.
+     */
+    protected $attributes = [
+        'prefix' => '',
+        'next_number' => 1,
+        'pad_to' => 6,
+    ];
+
     protected $casts = [
         'next_number' => 'integer',
         'pad_to' => 'integer',
