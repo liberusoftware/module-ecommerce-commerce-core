@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Schema;
  * then the canonical the app generates and the host the request arrived on can
  * disagree. One row per hostname, one flagged primary for canonicals.
  */
-return new class extends Migration
+return new class() extends Migration
 {
     public function up(): void
     {
